@@ -1,0 +1,58 @@
+﻿@page "/working"
+@using System.Text.Json
+<h3>Working Biding</h3>
+
+<EditForm Model="Parameters"
+          OnSubmit="Submit"
+          FormName="working">
+
+    <div class="mb-3">
+        <InputSelect name="@nameof(Parameters.EnumValueParent)" @bind-Value="Parameters.EnumValueParent" class="form-control">
+            <option value="">None</option>
+            <option value="@Test.A.ToString()">@Test.A.ToString()</option>
+            <option value="@Test.B.ToString()">@Test.B.ToString()</option>
+        </InputSelect>
+    </div>
+
+    <hr />
+    @for (var index = 0; index < Parameters.Items.Length; index++)
+    {
+        var localIndex = index;
+
+        <h4>Item #@index</h4>
+        <div class="mb-3">
+            <InputText name="@($"Items[{localIndex}].StringValue")" @bind-Value="Parameters.Items[localIndex].StringValue" class="form-control"></InputText>
+        </div>
+        <div class="mb-3">
+            <InputSelect name="@($"Items[{localIndex}].EnumValue")" @bind-Value="Parameters.Items[localIndex].EnumValue" class="form-select">
+                <option value="">None</option>
+                <option value="@Test.A.ToString()">@Test.A.ToString()</option>
+                <option value="@Test.B.ToString()">@Test.B.ToString()</option>
+            </InputSelect>
+        </div>
+    }
+    <input type="submit" name="submit" value="submit" class="btn btn-primary" />
+</EditForm>
+
+@if (submited)
+{
+    <h3>bound value</h3>
+    <pre>
+        @(JsonSerializer.Serialize(Parameters, new JsonSerializerOptions() { WriteIndented = true }))
+    </pre>
+}
+
+@code {
+
+    [SupplyParameterFromForm(FormName = "working", Name = "")]
+    public GoodBiding Parameters { get; set; } = new();
+
+    private bool submited;
+
+    private void Submit()
+    {
+        submited = true;
+    }
+
+
+}
